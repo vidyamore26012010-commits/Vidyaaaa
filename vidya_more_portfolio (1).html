@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vidya More — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-pale: #F5EDD6;
+    --cream: #FAF7F2;
+    --navy: #1A1E2E;
+    --navy-mid: #2C3249;
+    --red: #8B2635;
+    --text: #2A2520;
+    --muted: #7A7065;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.35s cubic-bezier(0.2,1,0.3,1);
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 60px;
+    background: transparent;
+    transition: background 0.4s ease, backdrop-filter 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--navy);
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 42px; list-style: none; }
+  .nav-links a {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--navy);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 70px 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s ease forwards;
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s ease forwards;
+  }
+  .hero-name em { color: var(--gold); font-style: italic; }
+  .hero-tagline {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250,247,242,0.45);
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.75s ease forwards;
+  }
+  .hero-divider {
+    width: 60px; height: 1px;
+    background: var(--gold);
+    margin: 36px 0;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.9s ease forwards;
+  }
+  .hero-scroll {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 14px;
+    opacity: 0;
+    animation: fadeUp 0.9s 1.1s ease forwards;
+  }
+  .hero-scroll::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-right {
+    position: relative;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-art-container {
+    width: 340px; height: 440px;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 1.2s 0.6s ease forwards;
+  }
+  .hero-art-frame {
+    width: 100%; height: 100%;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #F0E8D6 0%, #E8DCCB 50%, #DDD0BA 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-art-frame::before {
+    content: '';
+    position: absolute; inset: 12px;
+    border: 1px solid var(--border);
+  }
+  /* SVG avatar illustration */
+  .hero-art-frame svg { width: 220px; height: 300px; }
+  .hero-art-tag {
+    position: absolute;
+    bottom: -16px; right: -16px;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    padding: 12px 24px;
+    letter-spacing: 0.04em;
+  }
+  .hero-badge {
+    position: absolute;
+    top: 30px; left: -20px;
+    width: 80px; height: 80px;
+    background: var(--navy);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    border: 2px solid var(--gold);
+  }
+  .hero-badge span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+  }
+  .hero-bg-text {
+    position: absolute;
+    bottom: 60px; right: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.06);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    user-select: none;
+  }
+
+  /* ABOUT */
+  section { position: relative; }
+  .about {
+    padding: 140px 120px;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .section-label {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .about-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--navy);
+  }
+  .about-heading em { color: var(--red); font-style: italic; }
+  .about-right {}
+  .about-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 40px;
+  }
+  .qual-strip {
+    background: var(--navy);
+    padding: 24px 32px;
+    display: flex; align-items: center; gap: 20px;
+    border-left: 3px solid var(--gold);
+  }
+  .qual-icon { font-size: 1.4rem; }
+  .qual-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.7;
+  }
+  .qual-text strong {
+    display: block;
+    color: var(--cream);
+    font-weight: 400;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: flex; gap: 0;
+    margin-top: 56px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    flex: 1;
+    padding: 32px 0;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 8px;
+  }
+
+  /* HOBBIES / PORTFOLIO */
+  .portfolio {
+    padding: 120px;
+    background: var(--navy);
+  }
+  .portfolio-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 70px;
+  }
+  .portfolio-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .portfolio-heading em { color: var(--gold); font-style: italic; }
+  .portfolio-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    max-width: 200px;
+    text-align: right;
+    line-height: 1.8;
+  }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .portfolio-card {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+    cursor: none;
+    group: true;
+  }
+  .portfolio-card:first-child { grid-column: span 2; height: 400px; }
+  .portfolio-card-bg {
+    width: 100%; height: 100%;
+    transition: transform 0.6s cubic-bezier(0.2,1,0.3,1);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .portfolio-card:hover .portfolio-card-bg { transform: scale(1.05); }
+  .portfolio-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,30,46,0.9) 0%, rgba(26,30,46,0.1) 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .portfolio-card:hover .portfolio-card-overlay { opacity: 1; }
+  .portfolio-card-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px;
+    transform: translateY(8px);
+    transition: transform 0.4s ease;
+    opacity: 0;
+  }
+  .portfolio-card:hover .portfolio-card-info { transform: translateY(0); opacity: 1; }
+  .card-category {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.03em;
+  }
+
+  /* SVG illustrations for cards */
+  .bg-dance { background: linear-gradient(135deg, #2C1A3E 0%, #1A0E2A 100%); }
+  .bg-sing  { background: linear-gradient(135deg, #3E1A1A 0%, #2A0E0E 100%); }
+  .bg-draw  { background: linear-gradient(135deg, #1A2C1A 0%, #0E1A0E 100%); }
+  .bg-paint { background: linear-gradient(135deg, #1A2040 0%, #0E1428 100%); }
+
+  /* ACHIEVEMENTS */
+  .achievements {
+    padding: 120px;
+    background: var(--cream);
+  }
+  .achievements-header { margin-bottom: 80px; }
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+  }
+  .ach-card {
+    background: var(--navy);
+    padding: 50px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+  }
+  .ach-card:hover { transform: translateY(-6px); }
+  .ach-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+  .ach-card:hover::before { transform: scaleX(1); }
+  .medal-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 28px;
+    border: 1px solid;
+  }
+  .medal-gold { border-color: #C9A84C; background: rgba(201,168,76,0.12); }
+  .medal-silver { border-color: #A8B4BE; background: rgba(168,180,190,0.12); }
+  .medal-bronze { border-color: #C48B5A; background: rgba(196,139,90,0.12); }
+  .ach-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .ach-desc {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(250,247,242,0.4);
+    line-height: 1.8;
+  }
+  .ach-medal-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    position: absolute;
+    bottom: 28px; right: 32px;
+    opacity: 0.15;
+    letter-spacing: -0.02em;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 120px;
+    background: var(--navy);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: 'CONNECT';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.04);
+    letter-spacing: -0.05em;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .contact-label { color: rgba(201,168,76,0.7); margin-bottom: 24px; }
+  .contact-label::before { background: rgba(201,168,76,0.5); }
+  .contact-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 60px;
+  }
+  .contact-heading em { color: var(--gold); font-style: italic; }
+  .contact-cards {
+    display: flex; justify-content: center; gap: 2px;
+    margin-top: 60px;
+    position: relative; z-index: 2;
+  }
+  .contact-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 40px 50px;
+    min-width: 200px;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .contact-card:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: rgba(201,168,76,0.5);
+  }
+  .contact-card-icon { font-size: 1.5rem; margin-bottom: 16px; display: block; }
+  .contact-card-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .contact-card-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #111520;
+    padding: 40px 120px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.15em;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* GOLD RULE DIVIDER */
+  .gold-rule {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 20px;
+  }
+  .gold-rule::before, .gold-rule::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .gold-rule-diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 20px 28px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 120px 40px 70px; min-height: 100vh; }
+    .about { grid-template-columns: 1fr; padding: 80px 40px; gap: 50px; }
+    .portfolio { padding: 80px 40px; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-card:first-child { grid-column: span 2; }
+    .achievements { padding: 80px 40px; }
+    .achievements-grid { grid-template-columns: 1fr; }
+    .contact { padding: 80px 40px; }
+    .contact-cards { flex-direction: column; align-items: center; }
+    footer { padding: 30px 40px; flex-direction: column; gap: 14px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Vidya <span>More</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-bg-text">VM</div>
+    <p class="hero-eyebrow">Creative Portfolio — 2025</p>
+    <h1 class="hero-name">Vidya<br/><em>More</em></h1>
+    <p class="hero-tagline">Dancer · Singer · Artist · Dreamer</p>
+    <div class="hero-divider"></div>
+    <p class="hero-scroll">Scroll to explore</p>
+  </div>
+  <div class="hero-right">
+    <div class="hero-art-container">
+      <div class="hero-art-frame">
+        <!-- Elegant portrait illustration -->
+        <svg viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="skinGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#D4956A"/>
+              <stop offset="100%" stop-color="#C07850"/>
+            </linearGradient>
+            <linearGradient id="dressGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1A1E2E"/>
+              <stop offset="100%" stop-color="#2C3249"/>
+            </linearGradient>
+            <linearGradient id="hairGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2A1A0A"/>
+              <stop offset="100%" stop-color="#1A0A00"/>
+            </linearGradient>
+          </defs>
+          <!-- Body/dress -->
+          <ellipse cx="110" cy="240" rx="60" ry="75" fill="url(#dressGrad)"/>
+          <!-- Gold detail on dress -->
+          <path d="M80,200 Q110,210 140,200 L150,280 Q110,295 70,280 Z" fill="url(#dressGrad)"/>
+          <path d="M95,200 L110,215 L125,200" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.6"/>
+          <line x1="110" y1="215" x2="110" y2="260" stroke="#C9A84C" stroke-width="0.8" opacity="0.4"/>
+          <!-- Neck -->
+          <rect x="100" y="148" width="20" height="28" rx="8" fill="url(#skinGrad)"/>
+          <!-- Head -->
+          <ellipse cx="110" cy="120" rx="38" ry="44" fill="url(#skinGrad)"/>
+          <!-- Hair -->
+          <ellipse cx="110" cy="96" rx="40" ry="28" fill="url(#hairGrad)"/>
+          <ellipse cx="76" cy="118" rx="12" ry="24" fill="url(#hairGrad)"/>
+          <ellipse cx="144" cy="118" rx="12" ry="24" fill="url(#hairGrad)"/>
+          <!-- Hair bun -->
+          <ellipse cx="110" cy="74" rx="18" ry="14" fill="url(#hairGrad)"/>
+          <!-- Gold hair accessory -->
+          <circle cx="118" cy="72" r="4" fill="#C9A84C" opacity="0.9"/>
+          <circle cx="118" cy="72" r="2" fill="#F5EDD6"/>
+          <!-- Eyes -->
+          <ellipse cx="96" cy="122" rx="7" ry="5" fill="white"/>
+          <ellipse cx="124" cy="122" rx="7" ry="5" fill="white"/>
+          <circle cx="97" cy="123" r="4" fill="#2A1A0A"/>
+          <circle cx="125" cy="123" r="4" fill="#2A1A0A"/>
+          <circle cx="98" cy="121" r="1.5" fill="white"/>
+          <circle cx="126" cy="121" r="1.5" fill="white"/>
+          <!-- Eyebrows -->
+          <path d="M89,115 Q96,111 103,113" stroke="#2A1A0A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M117,113 Q124,111 131,115" stroke="#2A1A0A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- Nose -->
+          <path d="M107,130 Q110,138 113,130" stroke="#C07850" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <!-- Smile -->
+          <path d="M100,142 Q110,149 120,142" stroke="#8B2635" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M100,142 Q110,152 120,142" fill="#C07070" opacity="0.5"/>
+          <!-- Arms -->
+          <path d="M72,175 Q55,185 52,210" stroke="url(#skinGrad)" stroke-width="16" fill="none" stroke-linecap="round"/>
+          <path d="M148,175 Q165,185 168,210" stroke="url(#skinGrad)" stroke-width="16" fill="none" stroke-linecap="round"/>
+          <!-- Gold necklace -->
+          <path d="M95,152 Q110,162 125,152" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity="0.8"/>
+          <circle cx="110" cy="163" r="3" fill="#C9A84C" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="hero-art-tag">Creative Soul</div>
+      <div class="hero-badge">
+        <span>SSC<br/>Qualified</span>
+      </div>
+    </div>
+    <div class="hero-bg-text" style="font-size:12rem;opacity:0.03;">ART</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left reveal">
+    <div class="section-label">About Me</div>
+    <h2 class="about-heading">A Soul That<br/>Creates &amp; <em>Inspires</em></h2>
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat-num">4</span>
+        <span class="stat-label">Hobbies</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Medals</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Passion</span>
+      </div>
+    </div>
+  </div>
+  <div class="about-right reveal" style="transition-delay:0.15s">
+    <p class="about-text">
+      I am Vidya More — a young creative soul with an innate passion for the arts. My world is painted with colours, filled with music, and set in motion by dance. I believe that creativity is not just a skill, but a way of seeing the world with fresh eyes and an open heart.
+    </p>
+    <p class="about-text" style="margin-top:-16px;">
+      Whether it is the graceful arc of a paintbrush, the rhythmic flow of a dance movement, or the resonance of a melody — I pour myself fully into every expression. My artistic journey has been recognised on competitive stages, and I carry each achievement as inspiration to grow further.
+    </p>
+    <div class="qual-strip">
+      <div class="qual-icon">🎓</div>
+      <div class="qual-text">
+        <strong>Secondary School Certificate (SSC)</strong>
+        Academic Foundation · 10th Standard Completed
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO / HOBBIES -->
+<section class="portfolio" id="portfolio">
+  <div class="portfolio-header reveal">
+    <div>
+      <div class="section-label" style="color:rgba(201,168,76,0.7)"><span style="background:rgba(201,168,76,0.5);width:24px;height:1px;display:inline-block;vertical-align:middle;margin-right:12px;"></span>Creative World</div>
+      <h2 class="portfolio-heading">Passions &amp; <em>Pursuits</em></h2>
+    </div>
+    <p class="portfolio-sub">A curated collection of creative interests and artistic endeavours</p>
+  </div>
+
+  <div class="portfolio-grid reveal" style="transition-delay:0.2s">
+
+    <!-- Dance - large card -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-bg bg-dance">
+        <svg viewBox="0 0 200 300" width="160" height="220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dance figure -->
+          <circle cx="100" cy="40" r="18" fill="#C9A84C" opacity="0.8"/>
+          <!-- Body -->
+          <path d="M100,58 Q90,90 75,110 Q65,125 80,140 Q95,155 100,140 Q105,155 120,140 Q135,125 125,110 Q110,90 100,58Z" fill="#C9A84C" opacity="0.5"/>
+          <!-- Left arm raised -->
+          <path d="M90,75 Q70,55 55,40" stroke="#C9A84C" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+          <!-- Right arm out -->
+          <path d="M110,80 Q135,85 155,75" stroke="#C9A84C" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+          <!-- Legs -->
+          <path d="M95,140 Q85,170 70,190" stroke="#C9A84C" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <path d="M105,140 Q120,165 135,180" stroke="#C9A84C" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <!-- Dress flow lines -->
+          <path d="M80,100 Q60,130 50,160" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.3"/>
+          <path d="M90,105 Q75,140 65,175" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.3"/>
+          <!-- Stars/sparkles -->
+          <circle cx="40" cy="50" r="2" fill="#C9A84C" opacity="0.6"/>
+          <circle cx="160" cy="60" r="2" fill="#C9A84C" opacity="0.6"/>
+          <circle cx="30" cy="110" r="1.5" fill="#C9A84C" opacity="0.4"/>
+          <circle cx="170" cy="100" r="1.5" fill="#C9A84C" opacity="0.4"/>
+          <text x="30" y="260" font-family="serif" font-size="11" fill="#C9A84C" opacity="0.25" font-style="italic">movement · rhythm · grace</text>
+        </svg>
+      </div>
+      <div class="portfolio-card-overlay"></div>
+      <div class="portfolio-card-info">
+        <p class="card-category">Performing Arts</p>
+        <p class="card-title">Dance</p>
+      </div>
+    </div>
+
+    <!-- Singing -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-bg bg-sing">
+        <svg viewBox="0 0 200 260" width="140" height="180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Microphone -->
+          <rect x="85" y="60" width="30" height="50" rx="15" fill="#8B2635" opacity="0.8"/>
+          <rect x="85" y="60" width="30" height="50" rx="15" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+          <!-- Mic lines -->
+          <line x1="85" y1="80" x2="115" y2="80" stroke="#C9A84C" stroke-width="0.8" opacity="0.4"/>
+          <line x1="85" y1="90" x2="115" y2="90" stroke="#C9A84C" stroke-width="0.8" opacity="0.4"/>
+          <!-- Stand -->
+          <line x1="100" y1="110" x2="100" y2="160" stroke="#C9A84C" stroke-width="2.5" opacity="0.7"/>
+          <path d="M75,160 Q100,155 125,160" stroke="#C9A84C" stroke-width="2.5" fill="none" opacity="0.7"/>
+          <!-- Sound waves -->
+          <path d="M60,75 Q50,85 60,95" stroke="#C9A84C" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+          <path d="M48,68 Q33,85 48,102" stroke="#C9A84C" stroke-width="2" fill="none" opacity="0.35" stroke-linecap="round"/>
+          <path d="M140,75 Q150,85 140,95" stroke="#C9A84C" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+          <path d="M152,68 Q167,85 152,102" stroke="#C9A84C" stroke-width="2" fill="none" opacity="0.35" stroke-linecap="round"/>
+          <!-- Musical notes -->
+          <text x="40" y="200" font-family="serif" font-size="28" fill="#C9A84C" opacity="0.2">♪ ♫</text>
+        </svg>
+      </div>
+      <div class="portfolio-card-overlay"></div>
+      <div class="portfolio-card-info">
+        <p class="card-category">Performing Arts</p>
+        <p class="card-title">Singing</p>
+      </div>
+    </div>
+
+    <!-- Drawing -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-bg bg-draw">
+        <svg viewBox="0 0 200 260" width="140" height="180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Pencil -->
+          <rect x="90" y="30" width="18" height="130" rx="4" fill="#C9A84C" opacity="0.7" transform="rotate(-25,99,95)"/>
+          <polygon points="80,165 99,185 118,165" fill="#F5EDD6" opacity="0.8" transform="rotate(-25,99,175)"/>
+          <rect x="90" y="28" width="18" height="15" rx="2" fill="#8B8080" opacity="0.6" transform="rotate(-25,99,35)"/>
+          <!-- Paper/lines -->
+          <rect x="40" y="80" width="110" height="140" rx="4" fill="rgba(255,255,255,0.04)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="55" y1="105" x2="135" y2="105" stroke="#C9A84C" stroke-width="0.8" opacity="0.2"/>
+          <line x1="55" y1="120" x2="120" y2="120" stroke="#C9A84C" stroke-width="0.8" opacity="0.2"/>
+          <line x1="55" y1="135" x2="130" y2="135" stroke="#C9A84C" stroke-width="0.8" opacity="0.2"/>
+          <!-- Star sketch -->
+          <polygon points="95,150 100,138 105,150 118,150 108,158 112,170 100,163 88,170 92,158 82,150" fill="none" stroke="#C9A84C" stroke-width="1.2" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="portfolio-card-overlay"></div>
+      <div class="portfolio-card-info">
+        <p class="card-category">Visual Arts</p>
+        <p class="card-title">Drawing</p>
+      </div>
+    </div>
+
+    <!-- Painting -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-bg bg-paint">
+        <svg viewBox="0 0 200 260" width="140" height="180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Palette -->
+          <path d="M40,90 Q35,60 60,50 Q90,38 120,50 Q155,62 160,90 Q168,120 150,140 Q130,162 100,155 Q80,150 75,165 Q68,180 55,170 Q35,155 35,130 Q33,110 40,90Z" fill="rgba(201,168,76,0.1)" stroke="#C9A84C" stroke-width="1.2" opacity="0.6"/>
+          <!-- Paint dollops -->
+          <circle cx="75" cy="75" r="10" fill="#8B2635" opacity="0.7"/>
+          <circle cx="110" cy="65" r="10" fill="#C9A84C" opacity="0.7"/>
+          <circle cx="140" cy="85" r="10" fill="#1A2040" opacity="0.8" stroke="#C9A84C" stroke-width="1"/>
+          <circle cx="135" cy="120" r="10" fill="#2C3249" opacity="0.8" stroke="#C9A84C" stroke-width="1"/>
+          <!-- Thumb hole -->
+          <circle cx="60" cy="135" r="12" fill="rgba(0,0,0,0.3)" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+          <!-- Paintbrush -->
+          <line x1="155" y1="40" x2="100" y2="100" stroke="#F5EDD6" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+          <circle cx="100" cy="100" r="8" fill="#C9A84C" opacity="0.5"/>
+          <polygon points="148,35 160,30 158,45" fill="#C9A84C" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="portfolio-card-overlay"></div>
+      <div class="portfolio-card-info">
+        <p class="card-category">Visual Arts</p>
+        <p class="card-title">Painting</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section class="achievements" id="achievements">
+  <div class="achievements-header reveal">
+    <div class="section-label">Honours &amp; Awards</div>
+    <h2 class="about-heading">Achievements That<br/><em>Shine</em></h2>
+  </div>
+  <div class="achievements-grid">
+
+    <div class="ach-card reveal">
+      <div class="medal-icon medal-gold">🥇</div>
+      <h3 class="ach-title">Gold Medal<br/>in Drawing</h3>
+      <p class="ach-desc">Awarded for outstanding artistic<br/>excellence in competitive drawing</p>
+      <span class="ach-medal-text">Gold</span>
+    </div>
+
+    <div class="ach-card reveal" style="transition-delay:0.15s">
+      <div class="medal-icon medal-silver">🥈</div>
+      <h3 class="ach-title">Silver Medal<br/>in Volleyball</h3>
+      <p class="ach-desc">Runner-up distinction in<br/>competitive volleyball tournament</p>
+      <span class="ach-medal-text">Silver</span>
+    </div>
+
+    <div class="ach-card reveal" style="transition-delay:0.3s">
+      <div class="medal-icon medal-bronze">🥉</div>
+      <h3 class="ach-title">Bronze Medal<br/>in Volleyball</h3>
+      <p class="ach-desc">Third-place recognition in<br/>volleyball championship</p>
+      <span class="ach-medal-text">Bronze</span>
+    </div>
+
+  </div>
+
+  <!-- Gold rule -->
+  <div class="gold-rule" style="margin-top:80px;">
+    <div class="gold-rule-diamond"></div>
+  </div>
+  <p style="text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--muted);letter-spacing:0.06em;">"Excellence is not a destination — it is a continuous journey of passion and dedication."</p>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="reveal">
+    <div class="section-label contact-label" style="justify-content:center;">Get In Touch</div>
+    <h2 class="contact-heading">Let Us <em>Connect</em><br/>and Create Together</h2>
+  </div>
+  <div class="contact-cards reveal" style="transition-delay:0.2s">
+    <div class="contact-card">
+      <span class="contact-card-icon">✉️</span>
+      <span class="contact-card-label">Email</span>
+      <span class="contact-card-value">vidya.more@email.com</span>
+    </div>
+    <div class="contact-card">
+      <span class="contact-card-icon">📍</span>
+      <span class="contact-card-label">Location</span>
+      <span class="contact-card-value">India</span>
+    </div>
+    <div class="contact-card">
+      <span class="contact-card-icon">🎨</span>
+      <span class="contact-card-label">Expertise</span>
+      <span class="contact-card-value">Arts &amp; Performance</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Vidya <span>More</span></div>
+  <div class="footer-copy">© 2025 Vidya More · All rights reserved</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function moveCursor() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursor.style.transform = `translate(${mx - 4}px,${my - 4}px)`;
+    ring.style.transform  = `translate(${rx - 18}px,${ry - 18}px)`;
+    requestAnimationFrame(moveCursor);
+  })();
+  document.querySelectorAll('a, .portfolio-card, .ach-card, .contact-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.style.transform += ' scale(1.6)'; ring.style.borderColor = 'var(--gold)'; });
+    el.addEventListener('mouseleave', () => { ring.style.borderColor = 'var(--gold)'; });
+  });
+
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
